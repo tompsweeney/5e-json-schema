@@ -1,0 +1,633 @@
+{
+	"$schema" : "http://json-schema.org/draft-04/schema#",
+
+	"definitions" : {
+
+		"die" : {
+			"type" : "string",
+			"enum" : [
+				"d4",
+				"d6",
+				"d8",
+				"d10",
+				"d12",
+				"d20",
+				"d100"
+			]
+		},
+
+		"coin_type" : {
+			"type" : "string",
+			"enum" : [
+				"cp",
+				"sp",
+				"ep",
+				"gp",
+				"pp"
+			]
+		},
+
+		"alignment" : {
+			"type" : "string",
+			"enum" : [
+				"Lawful Good",
+				"Neutral Good",
+				"Chaotic Good",
+				"Lawful Neutral",
+				"Neutral",
+				"Chaotic Neutral",
+				"Lawful Evil",
+				"Neutral Evil",
+				"Chaotic Evil"
+			]
+		},
+
+		"size" : {
+			"type" : "string",
+			"enum" : [
+				"Tiny",
+				"Small",
+				"Medium",
+				"Large",
+				"Huge",
+				"Gargantuan"
+			]
+		},
+
+		"ability" : {
+			"type" : "string",
+			"enum" : [
+				"Strength",
+				"Dexterity",
+				"Constitution",
+				"Intelligence",
+				"Wisdom",
+				"Charisma"
+			]
+		},
+
+		"skill" : {
+			"type" : "string",
+			"enum" : [
+				"Acrobatics",
+				"Animal Handling",
+				"Arcana",
+				"Athletics",
+				"Deception",
+				"History",
+				"Insight",
+				"Intimidation",
+				"Investigation",
+				"Medicine",
+				"Nature",
+				"Perception",
+				"Performance",
+				"Persuasion",
+				"Religion",
+				"Sleight of Hand",
+				"Stealth",
+				"Survival"
+			]
+		},
+
+		"damage_type" : {
+			"type" : "string",
+			"enum" : [
+				"Acid",
+				"Bludgeoning",
+				"Cold",
+				"Fire",
+				"Force",
+				"Lightning",
+				"Necrotic",
+				"Piercing",
+				"Poison",
+				"Psychic",
+				"Radiant",
+				"Slashing",
+				"Thunder"
+			]
+		},
+
+		"magic_school" : {
+			"type" : "string",
+			"enum" : [
+				"Abjuration",
+				"Conjuration",
+				"Divination",
+				"Enchantment",
+				"Evocation",
+				"Illusion",
+				"Necromancy",
+				"Transmutation"
+			]
+		},
+
+		"conditions" : {
+			"type" : "string",
+			"enum" : [
+				"Blinded",
+				"Charmed",
+				"Deafened",
+				"Frightened",
+				"Grappled",
+				"Incapacitated",
+				"Invisible",
+				"Paralyzed",
+				"Petrified",
+				"Poisoned",
+				"Prone",
+				"Restrained",
+				"Stunned",
+				"Unconscious"
+			]
+		},
+
+		"weapon_category" : {
+			"type" : "string",
+			"enum" : [
+				"Simple Melee",
+				"Simple Ranged",
+				"Martial Melee",
+				"Martial Ranged"
+			]
+		},
+
+		"weapon_property" : {
+			"type" : "string",
+			"enum" : [
+				"Light",
+				"Heavy",
+				"Finesse",
+				"Two-handed",
+				"Thrown",
+				"Versatile",
+				"Ammunition",
+				"Loading",
+				"Reach",
+				"Special"
+			]
+		},
+
+		"armor_category" : {
+			"type" : "string",
+			"enum" : [
+				"Light",
+				"Medium",
+				"Heavy",
+				"Shield"
+			]
+		},
+
+		"ability_score_modifier" : {
+			"type" : "object",
+			"properties" : {
+				"type" : {"enum" : ["ability_score_modifier"]},
+				"ability" : {"$ref" : "#/definitions/ability"},
+				"amount" : {"type" : "integer"}
+			},
+			"required" : ["type", "ability", "amount"],
+			"additionalProperties" : false
+		},
+
+		"hp_per_level_modifier" : {
+			"type" : "object",
+			"properties" : {
+				"type" : {"enum" : ["hp_per_level_modifier"]},
+				"amount" : {"type" : "integer"}
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "amount"]
+		},
+
+		"armor_class_modifier" : {
+			"type" : "object",
+			"properties" : {
+				"type" : {"enum" : ["armor_class_modifier"]},
+				"amount" : {"type" : "integer"}
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "amount"]
+		},
+
+		"initiative_modifier" : {
+			"type" : "object",
+			"properties" : {
+				"type" : {"enum" : ["initiative_modifier"]},
+				"amount": {"type" : "integer"}
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "amount"]
+		},
+
+		"resistance" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["resistance"]},
+				"damage_type" : { "$ref" : "#/definitions/damage_type"}
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "damage_type"]
+		},
+
+		"vulnerability" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["vulnerability"]},
+				"damage_type" : { "$ref" : "#/definitions/damage_type"}
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "damage_type"]
+		},
+
+		"weapon_proficiency" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["weapon_proficiency"]},
+				"weapon_category" : { "$ref" : "#/definitions/weapon_category"},
+				"weapon" : { "type" : "string" }
+			},
+			"additionalProperties" : false,
+			"required" : ["type"]
+		},
+
+		"armor_proficiency" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["armor_proficiency"]},
+				"armor" : { "$ref" : "#/definitions/armor_category" }
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "armor"]
+		},
+
+		"tool_proficiency" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["tool_proficiency"]},
+				"tool" : { "type" : "string" }
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "tool"]
+		},
+
+		"skill_proficiency" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["skill_proficiency"]},
+				"skill" : { "$ref" : "#/definitions/skill" }
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "skill"]
+		},
+
+		"saving_throw_proficiency" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["saving_throw_proficiency"]},
+				"ability" : { "$ref" : "#/definitions/ability"}
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "ability"]
+		},
+
+		"language" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["language"]},
+				"language" : {"type" : "string"}
+			},
+			"additionalProperties" : false,
+			"required" : ["type"]
+		},
+
+		"known_spell" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["known_spell"]},
+				"spell_list" : {"type" : "string"},
+				"minimum_level" : {"type" : "integer"},
+				"maximum_level" : {"type" : "integer"},
+				"school" : {"$ref" : "#/definitions/magic_school"},
+				"spell" : {"type" : "string"}
+			},
+			"additionalProperties" : false,
+			"required" : ["type"]
+		},
+
+		"spell_slot" : {
+			"type" : "object",
+			"properties" : {
+				"type" : { "enum" : ["spell_slot"]},
+				"class" : { "type" : "string"},
+				"level" : { "type" : "integer"}
+			},
+			"additionalProperties" : false,
+			"required" : ["type", "class", "level"]
+		},
+
+		"rule" : {
+			"oneOf" : [
+				{ "$ref" : "#/definitions/ability_score_modifier"},
+				{ "$ref" : "#/definitions/hp_per_level_modifier"},
+				{ "$ref" : "#/definitions/armor_class_modifier"},
+				{ "$ref" : "#/definitions/initiative_modifier"},
+				{ "$ref" : "#/definitions/resistance"},
+				{ "$ref" : "#/definitions/vulnerability"},
+				{ "$ref" : "#/definitions/weapon_proficiency"},
+				{ "$ref" : "#/definitions/armor_proficiency"},
+				{ "$ref" : "#/definitions/tool_proficiency"},
+				{ "$ref" : "#/definitions/skill_proficiency"},
+				{ "$ref" : "#/definitions/saving_throw_proficiency"},
+				{ "$ref" : "#/definitions/language"},
+				{ "$ref" : "#/definitions/known_spell"},
+				{ "$ref" : "#/definitions/spell_slot"},
+				{ "$ref" : "#/definitions/rule_choice"}
+			]
+		},
+
+		"rule_choice" : {
+			"type" : "object",
+			"properties" : {
+				"choose" : {"type" : "integer"},
+				"from" : {
+					"type" : "array",
+					"items" : {
+						"$ref" : "#/definitions/rule"
+					}
+				}
+			},
+			"additionalProperties" : false,
+			"required" : ["choose", "from"]
+		},
+
+		"trait" : {
+			"anyOf" : [
+				{"$ref" : "#/definitions/trait_choice"},
+				{"$ref" : "#/definitions/required_trait"}
+			]
+		},
+
+		"trait_choice" : {
+			"type" : "object",
+			"properties" : {
+				"name" : { "type" : "string" },
+				"description" : { "type" : "string" },
+				"min_level" : {"type" : "integer"},
+				"max_level" : {"type" : "integer"},
+				"choose" : {"type" : "integer"},
+				"from" : {
+					"type" : "array",
+					"items" : {
+						"$ref" : "#/definitions/trait"
+					}
+				}
+			},
+			"additionalProperties" : false,
+			"required" : ["choose", "from"]
+		},
+
+		"required_trait" : {
+			"type" : "object",
+			"properties" : {
+				"name" : { "type" : "string" },
+				"description" : { "type" : "string" },
+				"sub_traits" : {
+					"type" : "array",
+					"items" : {
+						"$ref" : "#/definitions/trait"
+					}
+				},
+				"min_level" : {"type" : "integer"},
+				"max_level" : {"type" : "integer"},
+				"rules" : {
+					"type" : "array",
+					"items" : {
+						"$ref" : "#/definitions/rule"
+					}
+				}
+			},
+			"additionalProperties" : false
+		},
+
+		"race" : {
+			"type" : "object",
+			"properties" : {
+				"name" : { "type" : "string" },
+				"age" : { "type" : "string" },
+				"alignment" : { "type" : "string" },
+				"size" : {
+					"type" : "object",
+					"properties" : {
+						"category" : { "$ref" : "#/definitions/size"},
+						"description" : {"type" : "string"}
+					},
+					"additionalProperties" : false,
+					"required" : ["category"]
+				},
+				"speed" : { 
+					"type" : "object",
+					"properties" : {
+						"base_speed" : {"type" : "integer"},
+						"description" : {"type" : "string"}
+					}
+				},
+				"languages" : {
+					"type" : "array",
+					"items" : {
+						"type" : "string"
+					}
+				},
+				"sub_races" : {
+					"type" : "array",
+					"items" : {
+						"$ref" : "#/definitions/race"
+					}
+				},
+				"traits" : {
+					"type" : "array",
+					"items" : {
+						"$ref" : "#/definitions/trait"
+					}
+				}
+			},
+			"additionalProperties" : false,
+			"required" : ["name"]
+		},
+
+		"base_race" : {
+			"$ref" : "#/definitions/race",
+			"required" : ["name", "age", "alignment", "size", "base_speed", "languages"]
+		},
+
+		"class" : {
+			"type" : "object",
+			"properties" : {
+				"name" : { "type" : "string"},
+				"hit_die" : {"$ref" : "#/definitions/die"},
+				"primary_ability" : {"$ref" : "#/definitions/ability"},
+				"traits" : {
+					"type" : "array",
+					"items" : {
+						"$ref" : "#/definitions/trait"
+					}
+				}
+			},
+			"required" : ["name", "hit_die", "primary_ability"]
+		},
+
+		"spell" : {
+			"type" : "object",
+			"properties" : {
+				"name" : {"type" : "string"},
+				"casting_time" : {"type" : "string"},
+				"range" : {"type" : "string"},
+				"components" : {"type" : "string"},
+				"duration" : {"type" : "string"},
+				"description" : {"type" : "string"},
+				"level" : {"type" : "integer"},
+				"school" : { "$ref" : "#/definitions/magic_school"}
+			}
+		},
+
+		"weapon" : {
+			"type" : "object",
+			"properties" : {
+				"type" : {"enum" : ["weapon"]},
+				"name" : {"type" : "string"},
+				"description" : {"type" : "string"},
+				"category" : {"$ref" : "#/definitions/weapon_category"},
+				"cost" : {
+					"type" : "object",
+					"properties" : {
+						"amount" : {"type" : "integer"},
+						"coin" : {"$ref" : "#/definitions/coin_type"}
+					}
+				},
+				"weight" : {"type" : "integer"},
+				"damage_die_count" : {"type" : "integer"},
+				"damage_die" : {"$ref" : "#/definitions/die"},
+				"damage_type" : {"$ref" : "#/definitions/damage_type"},
+				"properties" : {
+					"type" : "array",
+					"items" : {"$ref" : "#/definitions/weapon_property"}
+				},
+				"range" : {
+					"type" : "object",
+					"properties" : {
+						"normal" : {"type" : "integer"},
+						"long" : {"type" : "integer"}
+					}
+				}
+			},
+			"required" : ["type", "name", "category", "cost", "weight", "damage_die_count", "damage_die", "damage_type", "properties"]
+		},
+
+		"armor" : {
+			"type" : "object",
+			"properties" : {
+				"type" : {"enum" : ["armor"]},
+				"name" : {"type" : "string"},
+				"description" : {"type" : "string"},
+				"category" : {"$ref" : "#/definitions/armor_category"},
+				"cost" : {
+					"type" : "object",
+					"properties" : {
+						"amount" : {"type" : "integer"},
+						"coin" : {"$ref" : "#/definitions/coin_type"}
+					}
+				},
+				"weight" : {"type" : "integer"},
+				"armor_class" : {"type" : "integer"},
+				"strength_required" : {"type" : "integer"},
+				"stealth_disadvantage" : {"type" : "boolean"}
+			},
+			"required" : ["type", "name", "category", "cost", "weight", "armor_class"]
+		},
+
+		"gear" : {
+			"type" : "object",
+			"properties" : {
+				"type" : {"enum" : ["gear"]},
+				"name" : {"type" : "string"},
+				"description" : {"type" : "string"},
+				"cost" : {
+					"type" : "object",
+					"properties" : {
+						"amount" : {"type" : "integer"},
+						"coin" : {"$ref" : "#/definitions/coin_type"}
+					}
+				},
+				"weight" : {"type" : "integer"}
+			},
+			"required" : ["type", "name", "cost", "weight"]
+		},
+
+		"pack" : {
+			"type" : "object",
+			"properties" : {
+				"type" : {"enum" : ["pack"]},
+				"name" : {"type" : "string"},
+				"description" : {"type" : "string"},
+				"cost" : {
+					"type" : "object",
+					"properties" : {
+						"amount" : {"type" : "integer"},
+						"coin" : {"$ref" : "#/definitions/coin_type"}
+					}
+				},
+				"items" : {
+					"type" : "array",
+					"items" : {
+						"type" : "string"
+					}
+				}
+			},
+			"required" : ["type", "name", "cost"]
+		},
+
+		"item" : {
+			"type" : "object",
+			"oneOf" : [
+				{"$ref" : "#/definitions/weapon"},
+				{"$ref" : "#/definitions/armor"},
+				{"$ref" : "#/definitions/gear"},
+				{"$ref" : "#/definitions/pack"}
+			]
+		}
+
+	},
+
+	"type" : "object",
+	"properties" : {
+		"$schema" : {"type" : "string"},
+		"races" : {
+			"type" : "array",
+			"items" : {
+				"$ref" : "#/definitions/base_race"
+			}
+		},
+
+		"classes" : {
+			"type" : "array",
+			"items" : {
+				"$ref" : "#/definitions/class"
+			}
+		},
+
+		"spells" : {
+			"type" : "array",
+			"items" : {
+				"$ref" : "#/definitions/spell"
+			}
+		},
+
+		"items" : {
+			"type" : "array",
+			"items" : {
+				"$ref" : "#/definitions/item"
+			}
+		}
+	},
+	"additionalProperties" : false
+}
